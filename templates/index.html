@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Retail Shelf Monitor</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f3f5f9;
+            color: #172033;
+        }
+
+        header {
+            background: #14243d;
+            color: white;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .status {
+            color: #7ee2b8;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 22px;
+        }
+
+        .intro {
+            margin-bottom: 28px;
+        }
+
+        .intro h1 {
+            font-size: 30px;
+            margin-bottom: 9px;
+        }
+
+        .intro p {
+            color: #68758a;
+            line-height: 1.6;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 4px 18px rgba(20, 36, 61, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .panel h2 {
+            font-size: 19px;
+            margin-bottom: 18px;
+        }
+
+        .upload-area {
+            border: 2px dashed #b9c5d7;
+            border-radius: 12px;
+            padding: 35px 20px;
+            text-align: center;
+            background: #f9fbfe;
+        }
+
+        .upload-area p {
+            color: #68758a;
+            margin: 12px 0;
+        }
+
+        input[type="file"] {
+            max-width: 100%;
+            margin: 12px 0;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 13px 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            color: #dc2626;
+            background: #fef2f2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .metric {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(20, 36, 61, 0.05);
+        }
+
+        .metric p {
+            color: #68758a;
+            font-size: 14px;
+        }
+
+        .metric h2 {
+            font-size: 32px;
+            color: #2563eb;
+            margin-top: 10px;
+        }
+
+        .result-image {
+            width: 100%;
+            max-height: 550px;
+            object-fit: contain;
+            background: #f3f5f9;
+            border-radius: 10px;
+        }
+
+        .note {
+            color: #68758a;
+            font-size: 13px;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #8792a5;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .intro h1 {
+                font-size: 24px;
+            }
+
+            .results {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">Smart Retail Shelf Monitor</div>
+    <div class="status">● AI Model Ready</div>
+</header>
+
+<main class="container">
+
+    <section class="intro">
+        <h1>Retail Shelf Analysis</h1>
+        <p>
+            Monitor supermarket shelves using computer vision.
+            Upload an image to detect and count visible products.
+        </p>
+    </section>
+
+    <section class="panel">
+        <h2>Upload Shelf Image</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="upload-area">
+                <h3>Select a shelf image</h3>
+                <p>Upload a JPG, JPEG or PNG image</p>
+
+                <input
+                    type="file"
+                    name="image"
+                    accept=".jpg,.jpeg,.png"
+                    required
+                >
+
+                <br>
+
+                <button type="submit">Analyze Shelf</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+    </section>
+
+    {% if result_image %}
+
+    <div class="results">
+
+        <div class="metric">
+            <p>Total Products Detected</p>
+            <h2>{{ product_count }}</h2>
+        </div>
+
+        <div class="metric">
+            <p>Average Detection Confidence</p>
+            <h2>{{ confidence }}%</h2>
+        </div>
+
+    </div>
+
+    <section class="panel">
+        <h2>Product Detection Results</h2>
+
+        <img
+            src="{{ url_for('static', filename=result_image) }}"
+            class="result-image"
+            alt="Shelf image with detected products"
+        >
+
+        <p class="note">
+            Product counts are estimates based on visible detections.
+            The model detects generic products, not individual brands.
+        </p>
+    </section>
+
+    {% endif %}
+
+</main>
+
+<footer>
+    Smart Retail Shelf Monitor | Powered by YOLO11n
+</footer>
+
+</body>
+</html>
